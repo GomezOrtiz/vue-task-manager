@@ -10,20 +10,24 @@ export default new Vuex.Store({
     user: null,
     tasks: [],
     task: {},
-    error: ""
+    error: "",
+    loading: false
   },
   mutations: {
     setUser(state, user) {
       state.user = user
-    },
-    setError(state, error) {
-      state.error = error
     },
     setTasks(state, tasks) {
       state.tasks = tasks
     },
     setTask(state, task) {
       state.task = task
+    },
+    setError(state, error) {
+      state.error = error
+    },
+    setLoading(state, loading) {
+      state.loading = loading
     }
   },
   actions: {
@@ -66,8 +70,9 @@ export default new Vuex.Store({
       commit("setUser", user)
     },
     async getTasks({ state, commit }) {
-      if(state.user) {
+      if (state.user) {
         try {
+          commit("setLoading", true)
           const docs = await db.collection(`tasks-${state.user.uid}`).get()
           const tasks = []
           docs.forEach(doc =>
@@ -77,6 +82,7 @@ export default new Vuex.Store({
             })
           )
           commit("setTasks", tasks)
+          commit("setLoading", false)
         } catch (error) {
           console.log(error)
           // Show error when retrieving all tasks

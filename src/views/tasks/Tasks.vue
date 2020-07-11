@@ -4,7 +4,8 @@
     <router-link to="/tasks/add">
       <button class="btn btn-success btn-block">Add task</button>
     </router-link>
-    <ul class="list-group mt-5">
+    <PulseLoader class="text-center mt-5" :loading="loading" />
+    <ul v-if="!loading" class="list-group mt-5">
       <li v-for="(task, idx) in tasks" :key="idx" class="list-group-item">
         {{ task.name }}
         <div class="float-right">
@@ -20,11 +21,13 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import PulseLoader from "vue-spinner/src/PulseLoader";
 
 export default {
   name: "Inicio",
+  components: { PulseLoader },
   computed: {
-    ...mapState(["tasks"])
+    ...mapState(["tasks", "loading"])
   },
   methods: {
     ...mapActions(["getTasks", "deleteTask"])
