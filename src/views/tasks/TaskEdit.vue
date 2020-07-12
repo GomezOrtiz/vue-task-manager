@@ -22,13 +22,13 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import { required, minLength } from "vuelidate/lib/validators";
 
 export default {
   name: "TaskEdit",
   computed: {
-    ...mapState(["task"])
+    ...mapGetters(["task"])
   },
   validations: {
     task: {

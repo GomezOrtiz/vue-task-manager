@@ -36,12 +36,12 @@
       </div>
       <button class="btn btn-success" type="submit" :disabled="$v.$invalid">Log in</button>
     </form>
-    <p v-if="error">Error: {{ error }}</p>
+    <small v-if="error" class="text-danger mt-2 d-block">{{ error }}</small>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import { required, email, minLength } from "vuelidate/lib/validators";
 
 export default {
@@ -61,7 +61,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["error"])
+    ...mapGetters(["error"])
   },
   methods: {
     ...mapActions(["logIn"])

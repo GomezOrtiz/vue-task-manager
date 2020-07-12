@@ -20,14 +20,14 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import PulseLoader from "vue-spinner/src/PulseLoader";
 
 export default {
   name: "Inicio",
   components: { PulseLoader },
   computed: {
-    ...mapState(["tasks", "loading"])
+    ...mapGetters(["tasks", "loading"])
   },
   methods: {
     ...mapActions(["getTasks", "deleteTask"])
