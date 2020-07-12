@@ -1,6 +1,6 @@
 import router from "../router"
-import AuthService from "@/common/services/AuthService"
-import TasksService from "@/common/services/TasksService"
+import AuthService from "@/services/AuthService"
+import TasksService from "@/services/TasksService"
 
 const initialState = {
     user: null,

@@ -25,15 +25,22 @@ import PulseLoader from "vue-spinner/src/PulseLoader";
 
 export default {
   name: "Inicio",
+  data() {
+    return {
+      loading: false
+    }
+  },
   components: { PulseLoader },
   computed: {
-    ...mapGetters(["tasks", "loading"])
+    ...mapGetters(["tasks"])
   },
   methods: {
     ...mapActions(["getTasks", "deleteTask"])
   },
-  created() {
-    this.getTasks();
+  async created() {
+    this.loading = true
+    await this.getTasks();
+    this.loading = false
   }
 };
 </script>

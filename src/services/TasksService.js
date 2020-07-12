@@ -14,11 +14,11 @@ const TasksService = {
         return tasks
     },
 
-    async findOne(taskId, userId) {
-        const doc = await db.collection(`tasks-${userId}`).doc(taskId).get()
+    async findOne(id, userId) {
+        const doc = await db.collection(`tasks-${userId}`).doc(id).get()
         const task = {
             ...doc.data(),
-            taskId
+            id
         }
         return task
     },
