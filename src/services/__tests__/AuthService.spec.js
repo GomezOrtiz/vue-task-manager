@@ -4,7 +4,6 @@ const CREDENTIALS = {
     email: "test@ŧest.com",
     password: "password"
 }
-const UID = "12345"
 
 jest.mock('@/firebase')
 import { auth } from "@/firebase"
@@ -16,7 +15,7 @@ describe("AuthService", () => {
         const result = await AuthService.signUp(CREDENTIALS)
 
         expect(auth.createUserWithEmailAndPassword).toHaveBeenCalledWith(CREDENTIALS.email, CREDENTIALS.password)
-        expect(result).toEqual({ uid: UID, email: CREDENTIALS.email })
+        expect(result).toEqual({ uid: auth.currentUser.uid, email: CREDENTIALS.email })
     })
 
     it("should log in", async () => {
@@ -24,7 +23,7 @@ describe("AuthService", () => {
         const result = await AuthService.logIn(CREDENTIALS)
 
         expect(auth.signInWithEmailAndPassword).toHaveBeenCalledWith(CREDENTIALS.email, CREDENTIALS.password)
-        expect(result).toEqual({ uid: UID, email: CREDENTIALS.email })
+        expect(result).toEqual({ uid: auth.currentUser.uid, email: CREDENTIALS.email })
     })
 
     it("should log out", async () => {
@@ -32,5 +31,12 @@ describe("AuthService", () => {
         await AuthService.logOut()
 
         expect(auth.signOut).toHaveBeenCalled()
+    })
+
+    it("should get current user", () => {
+
+        const result = AuthService.getCurrentUser()
+
+        expect(result).toEqual(auth.currentUser)
     })
 })

@@ -4,38 +4,45 @@ import { auth } from "../firebase"
 
 Vue.use(VueRouter)
 
+export const HOME_PATH = "/"
+export const SIGNUP_PATH = "/signup"
+export const LOGIN_PATH = "/login"
+export const TASKS_PATH = "/tasks"
+export const TASK_ADD_PATH = "/tasks/add"
+export const TASK_EDIT_PATH = "/tasks/edit"
+
 const routes = [
   {
-    path: '/',
+    path: HOME_PATH,
     name: 'Home',
-    component: () => import(/* webpackChunkName: "home" */ '../views/home/Home.vue')
+    component: () => import('../views/home/Home.vue')
   },
   {
-    path: '/signup',
+    path: SIGNUP_PATH,
     name: 'Signup',
-    component: () => import(/* webpackChunkName: "signup" */ '../views/auth/Signup.vue')
+    component: () => import('../views/auth/Signup.vue')
   },
   {
-    path: '/login',
+    path: LOGIN_PATH,
     name: 'Login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/auth/Login.vue')
+    component: () => import('../views/auth/Login.vue')
   },
   {
-    path: "/tasks",
+    path: TASKS_PATH,
     name: 'Tasks',
-    component: () => import(/* webpackChunkName: "tasks" */ '../views/tasks/Tasks.vue'),
+    component: () => import('../views/tasks/Tasks.vue'),
     meta: { requiresAuth: true }
   },
   {
-    path: '/tasks/add',
+    path: TASK_ADD_PATH,
     name: 'TaskAdd',
-    component: () => import(/* webpackChunkName: "taskAdd" */ '../views/tasks/TaskAdd.vue'),
+    component: () => import('../views/tasks/TaskAdd.vue'),
     meta: { requiresAuth: true }
   },
   {
-    path: '/tasks/edit/:id',
+    path: `${TASK_EDIT_PATH}/:id`,
     name: 'TaskEdit',
-    component: () => import(/* webpackChunkName: "taskEdit" */ '../views/tasks/TaskEdit.vue'),
+    component: () => import('../views/tasks/TaskEdit.vue'),
     meta: { requiresAuth: true }
   }
 ]
@@ -50,7 +57,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!auth.currentUser) {
       next({
-        path: '/login',
+        path: LOGIN_PATH,
         query: { redirect: to.fullPath }
       })
     } else {

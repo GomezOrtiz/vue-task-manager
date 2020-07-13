@@ -17,19 +17,17 @@ const DOCS = [
     }
 ]
 
-const UID = "12345"
-
 const db = {
     collection: jest.fn(name => {
         return {
-            taskId: "",
+            docId: "",
             doc: jest.fn(function(id) {
-                this.taskId = id
+                this.docId = id
                 return this
             }),
             get: jest.fn(function() {
                 return new Promise((resolve, reject) => {
-                    this.taskId ? resolve(DOCS[0]) : resolve(DOCS)
+                    this.docId ? resolve(DOCS[0]) : resolve(DOCS)
                 })
             }),
             update: jest.fn(),
@@ -40,17 +38,21 @@ const db = {
 }
 
 const auth = {
+    currentUser: { uid: "12345", email: ""},
     createUserWithEmailAndPassword: jest.fn(function(email, password) {
         return new Promise((resolve, reject) => {
-            resolve({ uid: UID, email })
+            resolve({ uid: this.currentUser.uid, email })
         })
     }),
     signInWithEmailAndPassword: jest.fn(function(email, password) {
         return new Promise((resolve, reject) => {
-            resolve({ uid: UID, email })
+            resolve({ uid: this.currentUser.uid, email })
         })
     }),
-    signOut: jest.fn()
+    signOut: jest.fn(),
+    getCurrentUser: jest.fn(function() {
+        return this.currentUser
+    })
 }
 
 module.exports = { db, auth }

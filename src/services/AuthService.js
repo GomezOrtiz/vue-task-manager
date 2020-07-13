@@ -14,6 +14,10 @@ const AuthService = {
 
     async logOut() {
         await auth.signOut()
+    },
+
+    getCurrentUser() {
+        return auth.currentUser
     }
 }
 

@@ -1,4 +1,4 @@
-import router from "../router"
+import router, { TASKS_PATH, LOGIN_PATH } from "../router"
 import AuthService from "@/services/AuthService"
 import TasksService from "@/services/TasksService"
 
@@ -36,10 +36,10 @@ const actions = {
             commit("SET_ERROR", "Repeated password must be the same")
         } else {
             try {
-                const user = await AuthService.signUp(credentials)
-                await TasksService.create({ name: "Create some tasks" }, user.uid)
-                commit("SET_USER", user)
-                router.push("/")
+                await AuthService.signUp(credentials)
+                const { uid } = AuthService.getCurrentUser()
+                await TasksService.create({ name: "Create some tasks" }, uid)
+                router.push(TASKS_PATH)
             } catch (error) {
                 switch (error.code) {
                     case "auth/email-already-in-use":
@@ -55,9 +55,8 @@ const actions = {
     },
     async logIn({ commit }, credentials) {
         try {
-            const user = await AuthService.logIn(credentials)
-            commit("SET_USER", user)
-            router.push("/tasks")
+            await AuthService.logIn(credentials)
+            router.push(TASKS_PATH)
         } catch (error) {
             switch (error.code) {
                 case "auth/user-not-found":
@@ -77,7 +76,7 @@ const actions = {
         try {
             await AuthService.logOut()
             commit("SET_USER", null)
-            router.push("/login")
+            router.push(LOGIN_PATH)
         } catch (error) {
             console.log(error)
             // TODO: Show error during signOut message
