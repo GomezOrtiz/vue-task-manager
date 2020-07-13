@@ -9,10 +9,10 @@ const initialState = {
 const state = { ...initialState }
 
 const mutations = {
-    setTasks(state, tasks) {
+    SET_TASKS(state, tasks) {
         state.tasks = tasks
     },
-    setTask(state, task) {
+    SET_TASK(state, task) {
         state.task = task
     }
 }
@@ -31,7 +31,7 @@ const actions = {
         if (getters.user) {
             try {
                 const tasks = await TasksService.findAll(getters.user.uid)
-                commit("setTasks", tasks)
+                commit("SET_TASKS", tasks)
             } catch (error) {
                 console.log(error)
                 // Show error when retrieving all tasks
@@ -41,7 +41,7 @@ const actions = {
     async getTask({ getters, commit }, id) {
         try {
             const task = await TasksService.findOne(id, getters.user.uid)
-            commit("setTask", task)
+            commit("SET_TASK", task)
         } catch (error) {
             console.log(error)
             // Show error. Not found? Error when retrieving?

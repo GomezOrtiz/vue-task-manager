@@ -10,10 +10,10 @@ const initialState = {
 const state = { ...initialState }
 
 const mutations = {
-    setUser(state, user) {
+    SET_USER(state, user) {
         state.user = user
     },
-    setError(state, error) {
+    SET_ERROR(state, error) {
         state.error = error
     },
 }
@@ -33,17 +33,17 @@ const getters = {
 const actions = {
     async signUp({ commit }, credentials) {
         if (credentials.password !== credentials.repeatPassword) {
-            commit("setError", "Repeated password must be the same")
+            commit("SET_ERROR", "Repeated password must be the same")
         } else {
             try {
                 const user = await AuthService.signUp(credentials)
                 await TasksService.create({ name: "Create some tasks" }, user.uid)
-                commit("setUser", user)
+                commit("SET_USER", user)
                 router.push("/")
             } catch (error) {
                 switch (error.code) {
                     case "auth/email-already-in-use":
-                        commit("setError", "The email address is already in use")
+                        commit("SET_ERROR", "The email address is already in use")
                         break
                     default:
                         console.log(error)
@@ -56,15 +56,15 @@ const actions = {
     async logIn({ commit }, credentials) {
         try {
             const user = await AuthService.logIn(credentials)
-            commit("setUser", user)
+            commit("SET_USER", user)
             router.push("/tasks")
         } catch (error) {
             switch (error.code) {
                 case "auth/user-not-found":
-                    commit("setError", "User not found. Wrong email or password?")
+                    commit("SET_ERROR", "User not found. Wrong email or password?")
                     break
                 case "auth/wrong-password":
-                    commit("setError", "User not found. Wrong email or password?")
+                    commit("SET_ERROR", "User not found. Wrong email or password?")
                     break
                 default:
                     console.log(error)
@@ -76,7 +76,7 @@ const actions = {
     async logOut({ commit }) {
         try {
             await AuthService.logOut()
-            commit("setUser", null)
+            commit("SET_USER", null)
             router.push("/login")
         } catch (error) {
             console.log(error)
@@ -84,7 +84,7 @@ const actions = {
         }
     },
     async setLoggedInUser({ commit }, user) {
-        commit("setUser", user)
+        commit("SET_USER", user)
     }
 }
 
