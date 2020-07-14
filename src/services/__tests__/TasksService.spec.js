@@ -11,6 +11,10 @@ import { db } from "@/firebase"
 
 describe("TaskService", () => {
 
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
+
     it("should find all tasks", async () => {
 
         const result = await TasksService.findAll(USER_ID)
@@ -64,5 +68,5 @@ describe("TaskService", () => {
 })
 
 const getCollectionResultValue = (collection) => {
-    return collection.mock.results[db.collection.mock.results.length - 1].value
+    return collection.mock.results[0].value
 }

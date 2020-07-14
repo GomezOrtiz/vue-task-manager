@@ -9,7 +9,7 @@ const initialState = {
 
 const state = { ...initialState }
 
-const mutations = {
+export const mutations = {
     SET_USER(state, user) {
         state.user = user
     },
@@ -18,7 +18,7 @@ const mutations = {
     },
 }
 
-const getters = {
+export const getters = {
     user(state) {
         return state.user
     },
@@ -30,7 +30,7 @@ const getters = {
     }
 }
 
-const actions = {
+export const actions = {
     async signUp({ commit }, credentials) {
         if (credentials.password !== credentials.repeatPassword) {
             commit("SET_ERROR", "Repeated password must be the same")

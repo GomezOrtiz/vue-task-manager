@@ -8,7 +8,7 @@ const initialState = {
 
 const state = { ...initialState }
 
-const mutations = {
+export const mutations = {
     SET_TASKS(state, tasks) {
         state.tasks = tasks
     },
@@ -17,7 +17,7 @@ const mutations = {
     }
 }
 
-const getters = {
+export const getters = {
     tasks(state) {
         return state.tasks
     },
@@ -26,7 +26,7 @@ const getters = {
     }
 }
 
-const actions = {
+export const actions = {
     async getTasks({ getters, commit }) {
         if (getters.user) {
             try {

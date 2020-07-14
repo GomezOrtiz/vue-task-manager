@@ -31,8 +31,8 @@ const TasksService = {
         await db.collection(`tasks-${userId}`).add(task)
     },
 
-    async delete(taskId, userId) {
-        await db.collection(`tasks-${userId}`).doc(taskId).delete()
+    async delete(id, userId) {
+        await db.collection(`tasks-${userId}`).doc(id).delete()
     }
 }
 
