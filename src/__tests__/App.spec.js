@@ -4,7 +4,7 @@ import VueRouter from "vue-router"
 import router, { HOME_PATH, TASKS_PATH, TASK_ADD_PATH, TASK_EDIT_PATH, LOGIN_PATH, SIGNUP_PATH } from "@/router"
 import Vuex from "vuex"
 import store from "@/store"
-import Vuelidate, { validationMixin } from 'vuelidate'
+import Vuelidate from 'vuelidate'
 import Home from "@/views/home/Home"
 import Tasks from "@/views/tasks/Tasks"
 import TaskAdd from "@/views/tasks/TaskAdd"
