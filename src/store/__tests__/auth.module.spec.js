@@ -1,5 +1,7 @@
 import { mutations, getters, actions } from "@/store/auth.module"
 
+const GLOBAL_ERROR = "Something bad happened"
+
 jest.mock("@/services/AuthService")
 jest.mock("@/services/TasksService")
 jest.mock("@/router", () => {
@@ -21,7 +23,7 @@ describe("Auth store module", () => {
     beforeEach(() => {
         state = {
             user: {},
-            error: ""
+            authError: ""
         }
         commit = jest.fn()
     })
@@ -35,22 +37,22 @@ describe("Auth store module", () => {
 
             mutations.SET_USER(state, MOCK_USER)
 
-            expect(state).toEqual({ user: MOCK_USER, error: "" })
+            expect(state).toEqual({ user: MOCK_USER, authError: "" })
             expect(getters.user(state)).toEqual(MOCK_USER)
             expect(getters.isLoggedInUser(state)).toBe(true)
         })
     })
 
-    describe("SET_ERROR", () => {
+    describe("SET_AUTH_ERROR", () => {
 
         it("should set an error in the state", () => {
 
             const expectedError = "Something bad happened"
 
-            mutations.SET_ERROR(state, expectedError)
+            mutations.SET_AUTH_ERROR(state, expectedError)
 
-            expect(state).toEqual({ user: {}, error: expectedError })
-            expect(getters.error(state)).toEqual(expectedError)
+            expect(state).toEqual({ user: {}, authError: expectedError })
+            expect(getters.authError(state, expectedError))
         })
     })
 
@@ -71,7 +73,7 @@ describe("Auth store module", () => {
 
             await actions.signUp({ commit }, credentials)
 
-            expect(commit).toHaveBeenCalledWith("SET_ERROR", "Repeated password must be the same")
+            expect(commit).toHaveBeenCalledWith("SET_AUTH_ERROR", "Repeated password must be the same")
         })
 
         it("should commit an error when returned by the service", async () => {
@@ -84,7 +86,22 @@ describe("Auth store module", () => {
             expect(AuthService.getCurrentUser).not.toHaveBeenCalled()
             expect(TasksService.create).not.toHaveBeenCalled()
             expect(router.push).not.toHaveBeenCalled()
-            expect(commit).toHaveBeenCalledWith("SET_ERROR", "The email address is already in use")
+            expect(commit).toHaveBeenCalledWith("SET_AUTH_ERROR", "The email address is already in use")
+        })
+
+        it("should commit a global error when something bad happened", async () => {
+
+            AuthService.signUp = jest.fn(() => {
+                throw new Error(GLOBAL_ERROR)
+            })
+
+            await actions.signUp({ commit }, VALID_CREDENTIALS)
+
+            expect(AuthService.signUp).toHaveBeenCalledWith(VALID_CREDENTIALS)
+            expect(AuthService.getCurrentUser).not.toHaveBeenCalled()
+            expect(TasksService.create).not.toHaveBeenCalled()
+            expect(router.push).not.toHaveBeenCalled()
+            expect(commit).toHaveBeenCalledWith("SET_GLOBAL_ERROR", GLOBAL_ERROR)
         })
     })
 
@@ -105,7 +122,7 @@ describe("Auth store module", () => {
 
             expect(AuthService.logIn(credentials)).rejects.toEqual({ code: "auth/user-not-found" })
             expect(router.push).not.toHaveBeenCalled()
-            expect(commit).toHaveBeenCalledWith("SET_ERROR", "User not found. Wrong email or password?")
+            expect(commit).toHaveBeenCalledWith("SET_AUTH_ERROR", "User not found. Wrong email or password?")
         })
 
         it("should commit wrong-password error when returned by the service", async () => {
@@ -116,7 +133,20 @@ describe("Auth store module", () => {
 
             expect(AuthService.logIn(credentials)).rejects.toEqual({ code: "auth/wrong-password" })
             expect(router.push).not.toHaveBeenCalled()
-            expect(commit).toHaveBeenCalledWith("SET_ERROR", "User not found. Wrong email or password?")
+            expect(commit).toHaveBeenCalledWith("SET_AUTH_ERROR", "User not found. Wrong email or password?")
+        })
+
+        it("should commit a global error when something bad happened", async () => {
+
+            AuthService.logIn = jest.fn(() => {
+                throw new Error(GLOBAL_ERROR)
+            })
+
+            await actions.logIn({ commit }, VALID_CREDENTIALS)
+
+            expect(AuthService.logIn).toHaveBeenCalledWith(VALID_CREDENTIALS)
+            expect(router.push).not.toHaveBeenCalled()
+            expect(commit).toHaveBeenCalledWith("SET_GLOBAL_ERROR", GLOBAL_ERROR)
         })
     })
 
@@ -129,6 +159,19 @@ describe("Auth store module", () => {
             expect(AuthService.logOut).toHaveBeenCalled()
             expect(commit).toHaveBeenCalledWith("SET_USER", null)
             expect(router.push).toHaveBeenCalledWith(LOGIN_PATH)
+        })
+
+        it("should commit a global error when something bad happened", async () => {
+
+            AuthService.logOut = jest.fn(() => {
+                throw new Error(GLOBAL_ERROR)
+            })
+
+            await actions.logOut({ commit })
+
+            expect(AuthService.logOut).toHaveBeenCalled()
+            expect(router.push).not.toHaveBeenCalled()
+            expect(commit).toHaveBeenCalledWith("SET_GLOBAL_ERROR", GLOBAL_ERROR)
         })
     })
 

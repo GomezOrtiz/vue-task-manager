@@ -1,10 +1,12 @@
-import router, { TASKS_PATH, LOGIN_PATH } from "../router"
+import router from "@/router"
+import { TASKS_PATH } from "@/router/tasks.routes"
+import { LOGIN_PATH } from "@/router/auth.routes"
 import AuthService from "@/services/AuthService"
 import TasksService from "@/services/TasksService"
 
 const initialState = {
     user: null,
-    error: "",
+    authError: "",
 }
 
 const state = { ...initialState }
@@ -13,8 +15,8 @@ export const mutations = {
     SET_USER(state, user) {
         state.user = user
     },
-    SET_ERROR(state, error) {
-        state.error = error
+    SET_AUTH_ERROR(state, authError) {
+        state.authError = authError
     },
 }
 
@@ -22,8 +24,8 @@ export const getters = {
     user(state) {
         return state.user
     },
-    error(state) {
-        return state.error
+    authError(state) {
+        return state.authError
     },
     isLoggedInUser(state) {
         return !!state.user
@@ -33,7 +35,7 @@ export const getters = {
 export const actions = {
     async signUp({ commit }, credentials) {
         if (credentials.password !== credentials.repeatPassword) {
-            commit("SET_ERROR", "Repeated password must be the same")
+            commit("SET_AUTH_ERROR", "Repeated password must be the same")
         } else {
             try {
                 await AuthService.signUp(credentials)
@@ -43,11 +45,10 @@ export const actions = {
             } catch (error) {
                 switch (error.code) {
                     case "auth/email-already-in-use":
-                        commit("SET_ERROR", "The email address is already in use")
+                        commit("SET_AUTH_ERROR", "The email address is already in use")
                         break
                     default:
-                        console.log(error)
-                        // TODO: Show error during signUp message
+                        commit("SET_GLOBAL_ERROR", error.message)
                         break
                 }
             }
@@ -60,14 +61,13 @@ export const actions = {
         } catch (error) {
             switch (error.code) {
                 case "auth/user-not-found":
-                    commit("SET_ERROR", "User not found. Wrong email or password?")
+                    commit("SET_AUTH_ERROR", "User not found. Wrong email or password?")
                     break
                 case "auth/wrong-password":
-                    commit("SET_ERROR", "User not found. Wrong email or password?")
+                    commit("SET_AUTH_ERROR", "User not found. Wrong email or password?")
                     break
                 default:
-                    console.log(error)
-                    // TODO: Show error during logIn message
+                    commit("SET_GLOBAL_ERROR", error.message)
                     break
             }
         }
@@ -78,8 +78,7 @@ export const actions = {
             commit("SET_USER", null)
             router.push(LOGIN_PATH)
         } catch (error) {
-            console.log(error)
-            // TODO: Show error during signOut message
+            commit("SET_GLOBAL_ERROR", error.message)
         }
     },
     async setLoggedInUser({ commit }, user) {

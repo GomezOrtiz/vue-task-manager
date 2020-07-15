@@ -36,7 +36,7 @@
       </div>
       <button class="btn btn-success" type="submit" :disabled="$v.$invalid">Log in</button>
     </form>
-    <small v-if="error" class="text-danger mt-2 d-block">{{ error }}</small>
+    <small v-if="authError" class="text-danger mt-2 d-block">{{ authError }}</small>
   </div>
 </template>
 
@@ -61,7 +61,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["error"])
+    ...mapGetters(["authError"])
   },
   methods: {
     ...mapActions(["logIn"])

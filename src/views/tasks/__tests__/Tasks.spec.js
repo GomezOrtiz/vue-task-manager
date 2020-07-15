@@ -1,7 +1,8 @@
 import Tasks from "@/views/tasks/Tasks"
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import VueRouter from "vue-router"
-import router, { TASK_ADD_PATH, TASK_EDIT_PATH } from "@/router"
+import router from "@/router"
+import { TASK_ADD_PATH, TASK_EDIT_PATH } from "@/router/tasks.routes"
 
 const localVue = createLocalVue()
 localVue.use(VueRouter)

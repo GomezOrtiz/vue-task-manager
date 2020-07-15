@@ -1,7 +1,8 @@
 import Navbar from "@/components/common/Navbar"
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import VueRouter from "vue-router"
-import { TASKS_PATH, LOGIN_PATH, SIGNUP_PATH } from "@/router"
+import { TASKS_PATH } from "@/router/tasks.routes"
+import { LOGIN_PATH, SIGNUP_PATH } from "@/router/auth.routes"
 
 const localVue = createLocalVue()
 localVue.use(VueRouter)

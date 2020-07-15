@@ -7,7 +7,7 @@ localVue.use(Vuelidate)
 
 const mockStore = {
     getters: {
-        error: ""
+        authError: ""
     },
     dispatch: jest.fn()
 }
@@ -146,18 +146,18 @@ describe("Signup", () => {
 
     it("should show an error from the store", () => {
 
-        const error = "Something bad happened"
+        const authError = "Something bad happened"
         wrapper = shallowMount(Signup, {
             mocks: {
                 $store: {
                     getters: {
-                        error
+                        authError
                     }
                 }
             }, localVue
         })
 
         const errorSmall = wrapper.find("small")
-        expect(errorSmall.text()).toBe(error)
+        expect(errorSmall.text()).toBe(authError)
     })
 })

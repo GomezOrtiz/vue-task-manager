@@ -1,7 +1,10 @@
 import App from "@/App"
 import { mount, createLocalVue } from '@vue/test-utils'
 import VueRouter from "vue-router"
-import router, { HOME_PATH, TASKS_PATH, TASK_ADD_PATH, TASK_EDIT_PATH, LOGIN_PATH, SIGNUP_PATH } from "@/router"
+import router, { HOME_PATH } from "@/router"
+import { TASKS_PATH, TASK_ADD_PATH, TASK_EDIT_PATH } from "@/router/tasks.routes"
+import { LOGIN_PATH, SIGNUP_PATH } from "@/router/auth.routes"
+
 import Vuex from "vuex"
 import store from "@/store"
 import Vuelidate from 'vuelidate'
@@ -11,6 +14,7 @@ import TaskAdd from "@/views/tasks/TaskAdd"
 import TaskEdit from "@/views/tasks/TaskEdit"
 import Login from "@/views/auth/Login"
 import Signup from "@/views/auth/Signup"
+import NotFound from "@/components/common/NotFound"
 
 const localVue = createLocalVue()
 localVue.use(VueRouter)
@@ -89,5 +93,12 @@ describe("App", () => {
 
         expect(router.currentRoute.path).toEqual(SIGNUP_PATH)
         expect(wrapper.findComponent(Signup).exists()).toBe(true)
+    })
+
+    it("should render NotFound in any unknown path", async () => {
+
+        await router.push("/whatever")
+
+        expect(wrapper.findComponent(NotFound).exists()).toBe(true)
     })
 })

@@ -1,15 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { auth } from "../firebase"
+import tasksRoutes from "@/router/tasks.routes"
+import authRoutes, { LOGIN_PATH } from "@/router/auth.routes"
 
 Vue.use(VueRouter)
 
 export const HOME_PATH = "/"
-export const SIGNUP_PATH = "/signup"
-export const LOGIN_PATH = "/login"
-export const TASKS_PATH = "/tasks"
-export const TASK_ADD_PATH = "/tasks/add"
-export const TASK_EDIT_PATH = "/tasks/edit"
 
 const routes = [
   {
@@ -17,33 +14,12 @@ const routes = [
     name: 'Home',
     component: () => import('../views/home/Home.vue')
   },
-  {
-    path: SIGNUP_PATH,
-    name: 'Signup',
-    component: () => import('../views/auth/Signup.vue')
-  },
-  {
-    path: LOGIN_PATH,
-    name: 'Login',
-    component: () => import('../views/auth/Login.vue')
-  },
-  {
-    path: TASKS_PATH,
-    name: 'Tasks',
-    component: () => import('../views/tasks/Tasks.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: TASK_ADD_PATH,
-    name: 'TaskAdd',
-    component: () => import('../views/tasks/TaskAdd.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: `${TASK_EDIT_PATH}/:id`,
-    name: 'TaskEdit',
-    component: () => import('../views/tasks/TaskEdit.vue'),
-    meta: { requiresAuth: true }
+  ...authRoutes,
+  ...tasksRoutes,
+  { 
+    path: '*', 
+    name: 'NotFound',
+    component: () => import('../components/common/NotFound')
   }
 ]
 
