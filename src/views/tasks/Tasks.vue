@@ -1,12 +1,10 @@
 <template>
   <div>
     <h1 class="text-center mb-4">Tasks list</h1>
-    <router-link to="/tasks/add">
-      <button class="btn btn-success btn-block">Add task</button>
-    </router-link>
+    <input type="text" placeholder="Enter a search term" class="form-control mb-3" v-model="query" />
     <PulseLoader class="text-center mt-5" :loading="loading" />
     <ul v-if="!loading" class="list-group mt-5">
-      <li v-for="(task, idx) in tasks" :key="idx" class="list-group-item">
+      <li v-for="(task, idx) in filteredTasks" :key="idx" class="list-group-item">
         {{ task.name }}
         <div class="float-right">
           <router-link :to="`/tasks/edit/${task.id}`">
@@ -16,6 +14,9 @@
         </div>
       </li>
     </ul>
+    <router-link to="/tasks/add" id="addTask">
+      <button class="btn btn-success btn-block mt-4">Add task</button>
+    </router-link>
   </div>
 </template>
 
@@ -27,20 +28,26 @@ export default {
   name: "Inicio",
   data() {
     return {
+      query: "",
       loading: false
-    }
+    };
   },
   components: { PulseLoader },
   computed: {
-    ...mapGetters(["tasks"])
+    ...mapGetters(["tasks"]),
+    filteredTasks() {
+      return this.tasks.filter(task => 
+            task.name.toLowerCase().includes(this.query.toLowerCase())
+        )
+    }
   },
   methods: {
     ...mapActions(["getTasks", "deleteTask"])
   },
   async created() {
-    this.loading = true
+    this.loading = true;
     await this.getTasks();
-    this.loading = false
+    this.loading = false;
   }
 };
 </script>

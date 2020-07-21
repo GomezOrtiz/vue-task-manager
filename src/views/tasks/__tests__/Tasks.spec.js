@@ -21,7 +21,7 @@ const mockStore = {
 
 describe("Tasks", () => {
 
-    let wrapper, tasks
+    let wrapper, tasks, query
 
     beforeEach(async () => {
         wrapper = shallowMount(Tasks, {
@@ -31,18 +31,19 @@ describe("Tasks", () => {
         })
         await wrapper.vm.$nextTick()
         tasks = wrapper.findAll("li")
+        query = wrapper.findAll("input")
     })
 
     it("add button should point to the expected route", async () => {
 
-        const addLink = wrapper.findAll("router-link-stub").at(0)
+        const addLink = wrapper.find("#addTask")
         expect(addLink.attributes("to")).toEqual(TASK_ADD_PATH)
     })
 
     it("should render with the expected list of tasks", async () => {
 
         expect(tasks.length).toBe(TASKS.length)
-        for(let i = 0; i < tasks.length; i++) {
+        for (let i = 0; i < tasks.length; i++) {
             const task = tasks.at(i)
             expect(task.text()).toContain(TASKS[i].name)
         }
@@ -50,7 +51,7 @@ describe("Tasks", () => {
 
     it("each task should have the expected number of buttons", async () => {
 
-        for(let i = 0; i < tasks.length; i++) {
+        for (let i = 0; i < tasks.length; i++) {
             const task = tasks.at(i)
 
             const buttons = task.findAll("button")
@@ -76,4 +77,24 @@ describe("Tasks", () => {
 
         expect(mockStore.dispatch).toHaveBeenCalledWith("deleteTask", TASKS[0].id)
     })
+
+    it('should filter tasks when query is filled and restore them when query is emptied', async () => {
+
+        query.setValue("2")
+        await wrapper.vm.$nextTick()
+
+        tasks = wrapper.findAll("li")
+        expect(tasks.length).toBe(1)
+        expect(tasks.at(0).text()).toContain("Task 2")
+
+        query.setValue("")
+        await wrapper.vm.$nextTick()
+
+        tasks = wrapper.findAll("li")
+        expect(tasks.length).toBe(TASKS.length)
+        for (let i = 0; i < tasks.length; i++) {
+            const task = tasks.at(i)
+            expect(task.text()).toContain(TASKS[i].name)
+        }
+    });
 })
